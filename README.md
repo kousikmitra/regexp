@@ -1,6 +1,6 @@
 # Regexp
 
-Regex |> Regexp.for_human()
+Regex |> Regexp.for_dummies()
 
 ## Use
 
