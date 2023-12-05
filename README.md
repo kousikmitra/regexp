@@ -8,9 +8,10 @@ Regex |> Regexp.for_dummies()
 Regexp.new()
 |> Regexp.literal("abc")
 |> Regexp.any_of(["x", "y"])
+|> Regexp.anything()
 |> Regexp.compile!()
 
-~r/abc[xy]/
+~r/abc[xy]./
 
 ```
 

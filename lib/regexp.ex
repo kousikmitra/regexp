@@ -8,6 +8,15 @@ defmodule Regexp do
     def to_regex(expr), do: Regex.escape(expr.literal)
   end
 
+  defmodule WildcardExpr do
+    @type t :: %__MODULE__{expr: String.t()}
+
+    defstruct expr: ""
+
+    @spec to_regex(t) :: String.t()
+    def to_regex(%_{expr: expr}), do: expr
+  end
+
   defmodule CharactersExpr do
     @type t :: %__MODULE__{chars: list(String.t()), negated: boolean()}
 
@@ -99,6 +108,45 @@ defmodule Regexp do
   @spec none_of(t, list(String.t())) :: t
   def none_of(regexp, chars),
     do: %{regexp | expr: [%CharactersExpr{chars: chars, negated: true} | regexp.expr]}
+
+  @doc """
+  Wildcard to match any character.
+
+  ## Examples
+
+      iex> new() |> anything() |> compile!()
+      ~r/./
+
+  """
+  @spec anything(t) :: t
+  def anything(regexp),
+    do: %{regexp | expr: [%WildcardExpr{expr: "."} | regexp.expr]}
+
+  @doc """
+  Wildcard to match any character.
+
+  ## Examples
+
+      iex> new() |> anydigit() |> compile!()
+      ~r/\d/
+
+  """
+  @spec anydigit(t) :: t
+  def anydigit(regexp),
+    do: %{regexp | expr: [%WildcardExpr{expr: "\d"} | regexp.expr]}
+
+  @doc """
+  Wildcard to match any alphanumeric + underscore.
+
+  ## Examples
+
+      iex> new() |> anywordchar() |> compile!()
+      ~r/\w/
+
+  """
+  @spec anywordchar(t) :: t
+  def anywordchar(regexp),
+    do: %{regexp | expr: [%WildcardExpr{expr: "\w"} | regexp.expr]}
 
   @doc """
   Create a new group with the complete pipeline.
